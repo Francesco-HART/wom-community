@@ -13,6 +13,23 @@ export enum HomeCardsViewModelType {
   Success = "Success",
 }
 
+export type HomeViewModel =
+  | {
+      type: HomeCardsViewModelType.Success;
+      cards: {
+        id: string;
+        companyName: string;
+        createAt: string;
+        companyLogo: string;
+      }[];
+    }
+  | {
+      type: HomeCardsViewModelType.Loading;
+    }
+  | {
+      type: HomeCardsViewModelType.NoLoyaltyCard;
+    };
+
 export const useHomeCardsViewModel =
   ({
     now,
@@ -23,8 +40,8 @@ export const useHomeCardsViewModel =
     local: LocaleData;
     localString: string;
   }) =>
-  (state: RootState) => {
-    TimeAgo.addDefaultLocale(local);
+  (state: RootState): HomeViewModel => {
+    TimeAgo.addLocale(local);
     const timeAgo = new TimeAgo(localString);
     const authUser = selectAuthUser(state);
     const isAuthLoyaltyCardsLoading = selectIsUserCardsLoading(

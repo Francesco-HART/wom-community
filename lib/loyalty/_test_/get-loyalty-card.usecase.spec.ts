@@ -5,7 +5,7 @@ import {
 import { LoyaltyFixture, createLoyaltyFixture } from "./loyalty.fixture";
 import { stateBuilderProvider } from "@/lib/state-builder";
 
-describe("test", () => {
+describe("Get loyalty usecase", () => {
   let loyaltyFixture: LoyaltyFixture;
   let authFixture: AuthFixture;
 
