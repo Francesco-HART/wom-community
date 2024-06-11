@@ -48,3 +48,12 @@ export const selectUserLoyaltyCards = (state: RootState, userId: string) =>
     .getSelectors()
     .selectAll(state.loyalty.loyalties)
     .filter((loyalty) => loyalty.ofUser.phoneNumber === userId);
+
+export const selectUserLoyaltyCardByCardId = (
+  state: RootState,
+  cardID: string
+) =>
+  loyaltyAdapter
+    .getSelectors()
+    .selectAll(state.loyalty.loyalties)
+    .find((loyalty) => loyalty.id === cardID);
