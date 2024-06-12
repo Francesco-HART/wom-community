@@ -10,10 +10,13 @@ import { reducer as authReducer } from "./auth/reducer";
 import { FakeLoyaltyGateway } from "./loyalty/infra/fake-loyalty.gateway";
 import { AuthGateway } from "./auth/models/auth.gateway";
 import { FakeAuthGateway } from "./auth/infra/fake-auth.gateway";
+import { BearingGateway } from "./loyalty/models/bearing.gateway";
+import { FakeBearingGateway } from "./loyalty/infra/fake-bearing.gateway";
 
 export type Dependencies = {
   loyaltyGateway: LoyaltyGateway;
   authGateway: AuthGateway;
+  bearingGateway: BearingGateway;
 };
 
 export const rootReducer = combineReducers({
@@ -43,6 +46,7 @@ export const createTestStore = (
   {
     loyaltyGateway = new FakeLoyaltyGateway(),
     authGateway = new FakeAuthGateway(),
+    bearingGateway = new FakeBearingGateway(),
   }: Partial<Dependencies> = {},
   preloadedState?: Partial<RootState>
 ) => {
@@ -50,6 +54,7 @@ export const createTestStore = (
     {
       loyaltyGateway,
       authGateway,
+      bearingGateway,
     },
     preloadedState
   );

@@ -15,9 +15,9 @@ export const getAuthLoyaltyCards = createAsyncAppThunk(
         authId: authUser.phoneNumber,
       })
     );
-    const loyaltyCards = await loyaltyGateway.getAuthLoyalties(
+    const loyaltiesCards = await loyaltyGateway.getAuthLoyalties(
       authUser.phoneNumber
     );
-    return { loyaltyCards: [...loyaltyCards], authUser: authUser };
+    return { loyaltyCards: [...loyaltiesCards], authUser: authUser };
   }
 );

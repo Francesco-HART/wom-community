@@ -5,6 +5,7 @@ import {
   getAuthLoyaltyCards,
 } from "../usecases/get-auth-loyalty-card.usecase";
 import { RootState } from "@/lib/create-store";
+import { loyaltyBuilder } from "../_test_/loyalty.builder";
 
 export type LoyaltySliceState = EntityState<Loyalty, "loyalty"> & {
   loadingCardsByUser: { [userId: string]: boolean };
@@ -21,15 +22,18 @@ export const loyaltySlice = createSlice({
       .addCase(getAuthLoyaltyCards.fulfilled, (state, action) => {
         loyaltyAdapter.addMany(
           state,
-          action.payload.loyaltyCards.map((loyalty) => ({
-            id: loyalty.id,
-            ofUser: {
-              phoneNumber: loyalty.phoneNumber,
-            },
-            ofCompany: loyalty.companyId,
-            createAt: loyalty.createAt,
-            companyLogo: loyalty.companyLogo,
-          }))
+          action.payload.loyaltyCards.map((loyalty) =>
+            loyaltyBuilder({
+              id: loyalty.id,
+              ofUser: {
+                phoneNumber: loyalty.phoneNumber,
+              },
+              ofCompany: loyalty.companyName,
+              createAt: loyalty.createAt,
+              companyLogo: loyalty.companyLogo,
+              visits: loyalty.visits.map((visit) => visit.id),
+            })
+          )
         );
 
         state.loadingCardsByUser[action.payload.authUser.phoneNumber] = false;

@@ -14,21 +14,22 @@ export const useCardDetailsViewModel =
     const authUser = selectAuthUser(state);
     const card = selectUserLoyaltyCardByCardId(state, loyaltyCardID);
 
-    if (authUser.phoneNumber) {
-      if (card)
-        return {
-          type: CardDetailsViewModelType.CardSuccess,
-          loyaltyCard: {
-            id: card.id,
-            companyName: card.ofCompany,
-            createAt: card.createAt,
-            companyLogo: card.companyLogo,
-          },
-        };
+    if (card)
+      return {
+        type: CardDetailsViewModelType.CardSuccess,
+        loyaltyCard: {
+          id: card.id,
+          companyName: card.ofCompany,
+          createAt: card.createAt,
+          companyLogo: card.companyLogo,
+        },
+      };
+
+    if (authUser.phoneNumber)
       return {
         type: CardDetailsViewModelType.CardDoseNotExist,
       };
-    }
+
     return {
       type: CardDetailsViewModelType.UserNoAuth,
     };
