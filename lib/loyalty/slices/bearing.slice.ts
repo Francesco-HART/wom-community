@@ -28,3 +28,9 @@ export const selectLoyaltyBearingsLoading = (
   state: RootState,
   loyaltyID: string
 ) => state.loyalty.bearings.loadingBearingByLoyalty[loyaltyID] ?? false;
+
+export const selectLoyaltyBearings = (state: RootState, loyaltyID: string) =>
+  bearingAdapter
+    .getSelectors()
+    .selectAll(state.loyalty.bearings)
+    .filter((b) => b.loyaltyID === loyaltyID);

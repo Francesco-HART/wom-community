@@ -24,13 +24,17 @@ const withBearings = createAction<Bearing[]>("loyalty/bearings/getBearings");
 const withVisits = createAction<Visit[]>("loyalty/withVisits");
 
 const withNotLoadingBearingForLoyalty = createAction<{ loyaltyID: string }>(
+  "loyalty/bearings/bearingsNotdLoading"
+);
+
+const withLoadingBearingForLoyalty = createAction<{ loyaltyID: string }>(
   "loyalty/bearings/bearingsLoading"
 );
 
 const reducer = createReducer(initialState, (builder) => {
   builder
     .addCase(withLoyaltyCards, (state, action) => {
-      loyaltyAdapter.addMany(state.loyalty.loyalties, action.payload);
+      loyaltyAdapter.upsertMany(state.loyalty.loyalties, action.payload);
     })
     .addCase(withAuthUser, (state, action) => {
       state.auth = action.payload;
@@ -50,6 +54,10 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(withNotLoadingBearingForLoyalty, (state, action) => {
       state.loyalty.bearings.loadingBearingByLoyalty[action.payload.loyaltyID] =
         false;
+    })
+    .addCase(withLoadingBearingForLoyalty, (state, action) => {
+      state.loyalty.bearings.loadingBearingByLoyalty[action.payload.loyaltyID] =
+        true;
     });
 });
 
@@ -68,6 +76,7 @@ export const stateBuilder = (baseState = initialState) => {
     withVisits: reduce(withVisits),
     withBearings: reduce(withBearings),
     withNotLoadingBearingForLoyalty: reduce(withNotLoadingBearingForLoyalty),
+    withLoadingBearingForLoyalty: reduce(withLoadingBearingForLoyalty),
     build(): RootState {
       return baseState;
     },

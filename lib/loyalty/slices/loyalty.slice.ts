@@ -6,6 +6,7 @@ import {
 } from "../usecases/get-auth-loyalty-card.usecase";
 import { RootState } from "@/lib/create-store";
 import { loyaltyBuilder } from "../_test_/loyalty.builder";
+import { getLoyaltyBearings } from "../usecases/get-loyalty-bearings.usecase";
 
 export type LoyaltySliceState = EntityState<Loyalty, "loyalty"> & {
   loadingCardsByUser: { [userId: string]: boolean };
@@ -18,29 +19,35 @@ export const loyaltySlice = createSlice({
   }) as LoyaltySliceState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getAuthLoyaltyCards.fulfilled, (state, action) => {
-        loyaltyAdapter.addMany(
-          state,
-          action.payload.loyaltyCards.map((loyalty) =>
-            loyaltyBuilder({
-              id: loyalty.id,
-              ofUser: {
-                phoneNumber: loyalty.phoneNumber,
-              },
-              ofCompany: loyalty.companyName,
-              createAt: loyalty.createAt,
-              companyLogo: loyalty.companyLogo,
-              visits: loyalty.visits.map((visit) => visit.id),
-            })
-          )
-        );
+    builder.addCase(getAuthLoyaltyCards.fulfilled, (state, action) => {
+      loyaltyAdapter.addMany(
+        state,
+        action.payload.loyaltyCards.map((loyalty) =>
+          loyaltyBuilder({
+            id: loyalty.id,
+            ofUser: {
+              phoneNumber: loyalty.phoneNumber,
+            },
+            ofCompany: loyalty.companyName,
+            createAt: loyalty.createAt,
+            companyLogo: loyalty.companyLogo,
+            visits: loyalty.visits.map((visit) => visit.id),
+          })
+        )
+      );
 
-        state.loadingCardsByUser[action.payload.authUser.phoneNumber] = false;
-      })
-      .addCase(authLoyaltyCardsPendings, (state, action) => {
-        state.loadingCardsByUser[action.payload.authId] = true;
+      state.loadingCardsByUser[action.payload.authUser.phoneNumber] = false;
+    });
+    builder.addCase(authLoyaltyCardsPendings, (state, action) => {
+      state.loadingCardsByUser[action.payload.authId] = true;
+    });
+    builder.addCase(getLoyaltyBearings.fulfilled, (state, action) => {
+      const loyaltyID = action.meta.arg.loyaltyID;
+      loyaltyAdapter.updateOne(state, {
+        id: loyaltyID,
+        changes: { bearings: action.payload.map((b) => b.id) },
       });
+    });
   },
 });
 

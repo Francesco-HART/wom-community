@@ -50,7 +50,22 @@ describe("Card details view model state", () => {
           ofCompany: "Birdy",
           createAt: "2023-05-16T12:06:00.000Z",
           companyLogo: "https://picsum.photos/200?random=pierre",
+          bearings: ["1"],
         }),
+      ])
+      .withBearings([
+        {
+          id: "1",
+          points: 1,
+          loyaltyID: "1",
+          offers: [
+            {
+              name: "Tarte tatin",
+              image: "https://picsum.photos/200?random=francesco",
+            },
+          ],
+          color: "#FF5733",
+        },
       ])
       .build();
     const store = createTestStore({}, state);
@@ -61,6 +76,57 @@ describe("Card details view model state", () => {
 
     expect(cardDetailsViewModel).toEqual({
       type: CardDetailsViewModelType.CardSuccess,
+      loyaltyCard: {
+        id: "1",
+        companyName: "Birdy",
+        createAt: "2023-05-16T12:06:00.000Z",
+        companyLogo: "https://picsum.photos/200?random=pierre",
+        bearings: [
+          {
+            id: "1",
+            points: 1,
+            loyaltyID: "1",
+            offers: [
+              {
+                name: "Tarte tatin",
+                image: "https://picsum.photos/200?random=francesco",
+              },
+            ],
+            color: "#FF5733",
+          },
+        ],
+      },
+    });
+  });
+
+  it("Auth loyalty card bearings loading", () => {
+    const state = stateBuilder()
+      .withAuthUser({
+        phoneNumber: "0101010101",
+      })
+      .withLoyaltyCards([
+        loyaltyBuilder({
+          id: "1",
+          ofUser: {
+            phoneNumber: "0101010101",
+          },
+          ofCompany: "Birdy",
+          createAt: "2023-05-16T12:06:00.000Z",
+          companyLogo: "https://picsum.photos/200?random=pierre",
+        }),
+      ])
+      .withLoadingBearingForLoyalty({
+        loyaltyID: "1",
+      })
+      .build();
+    const store = createTestStore({}, state);
+
+    const cardDetailsViewModel = useCardDetailsViewModel({
+      loyaltyCardID: "1",
+    })(store.getState());
+
+    expect(cardDetailsViewModel).toEqual({
+      type: CardDetailsViewModelType.BearingsLoading,
       loyaltyCard: {
         id: "1",
         companyName: "Birdy",

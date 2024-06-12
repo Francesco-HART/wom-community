@@ -9,6 +9,7 @@ export type Loyalty = {
   createAt: string;
   companyLogo: string;
   visits: string[];
+  bearings: string[];
 };
 
 export const loyaltyAdapter = createEntityAdapter<Loyalty>({});

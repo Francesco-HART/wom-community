@@ -33,6 +33,7 @@ export const createLoyaltyFixture = (
       createAt: "2023-05-16T12:06:00.000Z",
       companyLogo: "https://picsum.photos/200?random=pierre",
       visits: [],
+      bearings: [],
     }),
     givenLoyaltyCardsExists(loyalties: GetLoyalty[]) {
       loyaltyGateway.add(loyalties);
@@ -96,16 +97,28 @@ export const createLoyaltyFixture = (
 
     thenLoyaltyShouldBe({
       loyalty,
-      bearings = [],
+      bearings,
     }: {
       loyalty: Loyalty;
       bearings: Bearing[];
     }) {
       const expectState = stateBuilder(testStateBuilder.getState())
+        .withLoyaltyCards([
+          {
+            id: loyalty.id,
+            ofUser: loyalty.ofUser,
+            ofCompany: loyalty.ofCompany,
+            createAt: loyalty.createAt,
+            companyLogo: loyalty.companyLogo,
+            visits: loyalty.visits,
+            bearings: bearings.map((b) => b.id),
+          },
+        ])
         .withBearings(bearings)
         .withNotLoadingBearingForLoyalty({ loyaltyID: loyalty.id })
         .build();
-      expect(expectState).toEqual(store.getState());
+
+      expect(store.getState()).toEqual(expectState);
     },
   };
 };

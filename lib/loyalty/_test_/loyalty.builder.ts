@@ -7,6 +7,7 @@ export const loyaltyBuilder = ({
   createAt = "",
   companyLogo = "",
   visits = [],
+  bearings = [],
 }: Partial<Loyalty> = {}): Loyalty => {
   return {
     id,
@@ -15,5 +16,6 @@ export const loyaltyBuilder = ({
     createAt,
     companyLogo,
     visits,
+    bearings,
   };
 };

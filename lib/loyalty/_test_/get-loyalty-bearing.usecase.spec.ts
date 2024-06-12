@@ -29,13 +29,13 @@ describe("Get Loyalty bearing", () => {
       fixture.defaultLoyaltyOne.ofUser
     );
 
-    const bearings = fixture.whenFetchLoyaltyCardBearings({
+    const fetchedBearings = fixture.whenFetchLoyaltyCardBearings({
       loyaltyID: "1",
     });
 
     fixture.thenLoyaltyCardBearingsLoading({ loyaltyID: "1" });
 
-    await bearings;
+    await fetchedBearings;
 
     fixture.thenLoyaltyShouldBe({
       loyalty: fixture.defaultLoyaltyOne,
