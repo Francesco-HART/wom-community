@@ -18,7 +18,11 @@ describe("Get loyalty usecase", () => {
   });
 
   it("should return a loyalty", async () => {
-    authFixture.givenAuthUserShouldBe({ phoneNumber: "0101010101" });
+    authFixture.givenAuthUserShouldBe({
+      id: "1",
+      offers: [],
+      phoneNumber: "0101010101",
+    });
     loyaltyFixture.givenLoyaltyCardsExists([
       {
         id: "1",

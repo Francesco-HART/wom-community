@@ -12,11 +12,13 @@ describe("AuthenticatedWithGithub", () => {
     givenAuthUserShouldBeAuthenticatedWithGithub({
       id: "1",
       phoneNumber: "1234567890",
+      offers: [],
     });
     await whenAuthenticatedWithGithub();
     thenShouldBeAuthenticated({
       phoneNumber: "1234567890",
       id: "1",
+      offers: [],
     });
   });
 
@@ -30,7 +32,11 @@ describe("AuthenticatedWithGithub", () => {
 
   const thenShouldBeAuthenticated = (authUser: AuthUser) => {
     const expectedState = stateBuilder()
-      .withAuthUser({ phoneNumber: authUser.phoneNumber })
+      .withAuthUser({
+        phoneNumber: authUser.phoneNumber,
+        id: authUser.id,
+        offers: [],
+      })
       .build();
 
     expect(store.getState()).toEqual(expectedState);

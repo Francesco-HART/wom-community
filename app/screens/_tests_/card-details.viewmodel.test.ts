@@ -23,6 +23,8 @@ describe("Card details view model state", () => {
     const state = stateBuilder()
       .withAuthUser({
         phoneNumber: "0101010101",
+        id: "1",
+        offers: [],
       })
       .build();
     const store = createTestStore({}, state);
@@ -40,6 +42,8 @@ describe("Card details view model state", () => {
     const state = stateBuilder()
       .withAuthUser({
         phoneNumber: "0101010101",
+        id: "1",
+        offers: ["1"],
       })
       .withLoyaltyCards([
         loyaltyBuilder({
@@ -52,6 +56,13 @@ describe("Card details view model state", () => {
           companyLogo: "https://picsum.photos/200?random=pierre",
           bearings: ["1"],
         }),
+      ])
+      .withOffers([
+        {
+          name: "fake",
+          id: "1",
+          image: "https://picsum.photos/200?random=jack",
+        },
       ])
       .withBearings([
         {
@@ -81,6 +92,13 @@ describe("Card details view model state", () => {
         companyName: "Birdy",
         createAt: "2023-05-16T12:06:00.000Z",
         companyLogo: "https://picsum.photos/200?random=pierre",
+        offers: [
+          {
+            name: "fake",
+            id: "1",
+            image: "https://picsum.photos/200?random=jack",
+          },
+        ],
         bearings: [
           {
             id: "1",
@@ -103,7 +121,16 @@ describe("Card details view model state", () => {
     const state = stateBuilder()
       .withAuthUser({
         phoneNumber: "0101010101",
+        id: "1",
+        offers: ["1"],
       })
+      .withOffers([
+        {
+          name: "fake",
+          id: "1",
+          image: "https://picsum.photos/200?random=jack",
+        },
+      ])
       .withLoyaltyCards([
         loyaltyBuilder({
           id: "1",
@@ -112,7 +139,7 @@ describe("Card details view model state", () => {
           },
           ofCompany: "Birdy",
           createAt: "2023-05-16T12:06:00.000Z",
-          companyLogo: "https://picsum.photos/200?random=pierre",
+          companyLogo: "https://picsum.photos/200?random=paul",
         }),
       ])
       .withLoadingBearingForLoyalty({
@@ -131,7 +158,129 @@ describe("Card details view model state", () => {
         id: "1",
         companyName: "Birdy",
         createAt: "2023-05-16T12:06:00.000Z",
+        companyLogo: "https://picsum.photos/200?random=paul",
+        bearings: [],
+        offers: [
+          {
+            name: "fake",
+            id: "1",
+            image: "https://picsum.photos/200?random=jack",
+          },
+        ],
+      },
+    });
+  });
+
+  it("Offers loading", () => {
+    const state = stateBuilder()
+      .withAuthUser({
+        phoneNumber: "0101010101",
+        id: "1",
+        offers: [],
+      })
+      .withLoyaltyCards([
+        loyaltyBuilder({
+          id: "1",
+          ofUser: {
+            phoneNumber: "0101010101",
+          },
+          ofCompany: "Birdy",
+          createAt: "2023-05-16T12:06:00.000Z",
+          companyLogo: "https://picsum.photos/200?random=pierre",
+          bearings: ["1"],
+        }),
+      ])
+      .withLoadingOffersForAuthUser({
+        authID: "1",
+      })
+      .withBearings([
+        {
+          id: "1",
+          points: 1,
+          loyaltyID: "1",
+
+          offers: [
+            {
+              name: "Tarte tatin",
+              image: "https://picsum.photos/200?random=francesco",
+            },
+          ],
+          color: "#FF5733",
+        },
+      ])
+      .build();
+    const store = createTestStore({}, state);
+
+    const cardDetailsViewModel = useCardDetailsViewModel({
+      loyaltyCardID: "1",
+    })(store.getState());
+
+    expect(cardDetailsViewModel).toEqual({
+      type: CardDetailsViewModelType.OffersLoading,
+      loyaltyCard: {
+        id: "1",
+        companyName: "Birdy",
+        createAt: "2023-05-16T12:06:00.000Z",
         companyLogo: "https://picsum.photos/200?random=pierre",
+        offers: [],
+        bearings: [
+          {
+            id: "1",
+            points: 1,
+            loyaltyID: "1",
+            offers: [
+              {
+                name: "Tarte tatin",
+                image: "https://picsum.photos/200?random=francesco",
+              },
+            ],
+            color: "#FF5733",
+          },
+        ],
+      },
+    });
+  });
+
+  it("Auth loyalty card bearings and offers load both", () => {
+    const state = stateBuilder()
+      .withAuthUser({
+        phoneNumber: "0101010101",
+        id: "1",
+        offers: [],
+      })
+      .withLoyaltyCards([
+        loyaltyBuilder({
+          id: "1",
+          ofUser: {
+            phoneNumber: "0101010101",
+          },
+          ofCompany: "Birdy",
+          createAt: "2023-05-16T12:06:00.000Z",
+          companyLogo: "https://picsum.photos/200?random=pierre",
+        }),
+      ])
+      .withLoadingOffersForAuthUser({
+        authID: "1",
+      })
+      .withLoadingBearingForLoyalty({
+        loyaltyID: "1",
+      })
+      .build();
+    const store = createTestStore({}, state);
+
+    const cardDetailsViewModel = useCardDetailsViewModel({
+      loyaltyCardID: "1",
+    })(store.getState());
+
+    expect(cardDetailsViewModel).toEqual({
+      type: CardDetailsViewModelType.OffersAndBearingsLoading,
+      loyaltyCard: {
+        id: "1",
+        companyName: "Birdy",
+        createAt: "2023-05-16T12:06:00.000Z",
+        companyLogo: "https://picsum.photos/200?random=pierre",
+        bearings: [],
+        offers: [],
       },
     });
   });

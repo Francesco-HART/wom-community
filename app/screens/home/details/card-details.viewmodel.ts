@@ -5,12 +5,18 @@ import {
   selectLoyaltyBearingsLoading,
 } from "@/lib/loyalty/slices/bearing.slice";
 import { selectUserLoyaltyCardByCardId } from "@/lib/loyalty/slices/loyalty.slice";
+import {
+  selectIsUserOffersLoading,
+  selectAuthUserOffers,
+} from "@/lib/loyalty/slices/offer.slice";
 
 export enum CardDetailsViewModelType {
   UserNoAuth = "UserNoAuth",
   CardDoseNotExist = "CardDoseNotExist",
   CardSuccess = "CardSuccess",
   BearingsLoading = "BearingsLoading",
+  OffersAndBearingsLoading = "OffersAndBearingsLoading",
+  OffersLoading = "OffersLoading",
 }
 
 export const useCardDetailsViewModel =
@@ -22,37 +28,64 @@ export const useCardDetailsViewModel =
       state,
       loyaltyCardID
     );
+    const bearings = selectLoyaltyBearings(state, loyaltyCardID);
+    const offers = selectAuthUserOffers(state);
+    const isOffersLoading = selectIsUserOffersLoading(state, {
+      userID: authUser.id,
+    });
 
-    if (card) {
-      if (isBearingsLoading)
-        return {
-          type: CardDetailsViewModelType.BearingsLoading,
-          loyaltyCard: {
-            id: card.id,
-            companyName: card.ofCompany,
-            createAt: card.createAt,
-            companyLogo: card.companyLogo,
-          },
-        };
-      const loyaltyCardBearings = selectLoyaltyBearings(state, loyaltyCardID);
+    if (!authUser.id) return { type: CardDetailsViewModelType.UserNoAuth };
+
+    if (!card) return { type: CardDetailsViewModelType.CardDoseNotExist };
+
+    if (isBearingsLoading && isOffersLoading)
       return {
-        type: CardDetailsViewModelType.CardSuccess,
+        type: CardDetailsViewModelType.OffersAndBearingsLoading,
         loyaltyCard: {
           id: card.id,
           companyName: card.ofCompany,
           createAt: card.createAt,
           companyLogo: card.companyLogo,
-          bearings: loyaltyCardBearings,
+          offers: [],
+          bearings: [],
         },
       };
-    }
 
-    if (authUser.phoneNumber)
+    if (isOffersLoading)
       return {
-        type: CardDetailsViewModelType.CardDoseNotExist,
+        type: CardDetailsViewModelType.OffersLoading,
+        loyaltyCard: {
+          id: card.id,
+          companyName: card.ofCompany,
+          createAt: card.createAt,
+          companyLogo: card.companyLogo,
+          offers: [],
+          bearings,
+        },
+      };
+
+    if (isBearingsLoading)
+      return {
+        type: CardDetailsViewModelType.BearingsLoading,
+        loyaltyCard: {
+          id: card.id,
+          companyName: card.ofCompany,
+          createAt: card.createAt,
+          companyLogo: card.companyLogo,
+          offers,
+          bearings: [],
+        },
       };
 
     return {
-      type: CardDetailsViewModelType.UserNoAuth,
+      type: CardDetailsViewModelType.CardSuccess,
+      loyaltyCard: {
+        id: card.id,
+        companyName: card.ofCompany,
+        createAt: card.createAt,
+        companyLogo: card.companyLogo,
+        offers,
+        bearings,
+      },
     };
   };

@@ -7,12 +7,14 @@ import { RootState, rootReducer } from "./create-store";
 import { Loyalty, loyaltyAdapter } from "./loyalty/models/loyalty.model";
 import { Visit, visitAdapter } from "./loyalty/models/visit.model";
 import { Bearing, bearingAdapter } from "./loyalty/models/bearing.model";
+import { Offer, offerAdapter } from "./loyalty/models/offer.model";
+import { AuthUser } from "./auth/models/auth.model";
 
 const initialState = rootReducer(undefined, createAction("init")());
 
 const withLoyaltyCards = createAction<Loyalty[]>("loyalty/withLoyaltyCards");
 
-const withAuthUser = createAction<{ phoneNumber: string }>("auth/withAuthUser");
+const withAuthUser = createAction<AuthUser>("auth/withAuthUser");
 const withLoadingAuthLoyaltyCards = createAction<{ userId: string }>(
   "loyalty/auth/loading"
 );
@@ -29,6 +31,16 @@ const withNotLoadingBearingForLoyalty = createAction<{ loyaltyID: string }>(
 
 const withLoadingBearingForLoyalty = createAction<{ loyaltyID: string }>(
   "loyalty/bearings/bearingsLoading"
+);
+
+const withOffers = createAction<Offer[]>("auth/offers/getOffers");
+
+const withNotLoadingOffersForAuthUser = createAction<{ authID: string }>(
+  "auth/offers/offersNotLoading"
+);
+
+const withLoadingOffersForAuthUser = createAction<{ authID: string }>(
+  "auth/offers/offersLoading"
 );
 
 const reducer = createReducer(initialState, (builder) => {
@@ -58,6 +70,15 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(withLoadingBearingForLoyalty, (state, action) => {
       state.loyalty.bearings.loadingBearingByLoyalty[action.payload.loyaltyID] =
         true;
+    })
+    .addCase(withOffers, (state, action) => {
+      offerAdapter.addMany(state.loyalty.offers, action.payload);
+    })
+    .addCase(withNotLoadingOffersForAuthUser, (state, action) => {
+      state.loyalty.offers.loadingOffersByUser[action.payload.authID] = false;
+    })
+    .addCase(withLoadingOffersForAuthUser, (state, action) => {
+      state.loyalty.offers.loadingOffersByUser[action.payload.authID] = true;
     });
 });
 
@@ -77,6 +98,9 @@ export const stateBuilder = (baseState = initialState) => {
     withBearings: reduce(withBearings),
     withNotLoadingBearingForLoyalty: reduce(withNotLoadingBearingForLoyalty),
     withLoadingBearingForLoyalty: reduce(withLoadingBearingForLoyalty),
+    withOffers: reduce(withOffers),
+    withNotLoadingOffersForAuthUser: reduce(withNotLoadingOffersForAuthUser),
+    withLoadingOffersForAuthUser: reduce(withLoadingOffersForAuthUser),
     build(): RootState {
       return baseState;
     },

@@ -12,6 +12,10 @@ import { Bearing } from "../models/bearing.model";
 import { getLoyaltyBearings } from "../usecases/get-loyalty-bearings.usecase";
 import { FakeBearingGateway } from "../infra/fake-bearing.gateway";
 import { selectLoyaltyBearingsLoading } from "../slices/bearing.slice";
+import { Offer } from "../models/offer.model";
+import { getAuthEventOffers } from "../usecases/get-auth-event-offers.usecase";
+import { FakeOfferGateway } from "../infra/fake-offer.gateway";
+import { selectIsUserOffersLoading } from "../slices/offer.slice";
 
 export type LoyaltyFixture = ReturnType<typeof createLoyaltyFixture>;
 
@@ -20,6 +24,7 @@ export const createLoyaltyFixture = (
 ) => {
   const loyaltyGateway = new FakeLoyaltyGateway();
   const bearingGateway = new FakeBearingGateway();
+  const offerGateway = new FakeOfferGateway();
 
   let store: AppStore;
 
@@ -51,6 +56,9 @@ export const createLoyaltyFixture = (
     givenBearingsExists(bearings: Bearing[]) {
       bearingGateway.add(bearings);
     },
+    givenOffersExists(offers: Offer[], authID: string) {
+      offerGateway.add(offers, authID);
+    },
     async whenFetchLoyaltyCards() {
       store = createTestStore({ loyaltyGateway }, testStateBuilder.getState());
       await store.dispatch(getAuthLoyaltyCards());
@@ -59,12 +67,23 @@ export const createLoyaltyFixture = (
       store = createTestStore({ bearingGateway }, testStateBuilder.getState());
       await store.dispatch(getLoyaltyBearings({ loyaltyID }));
     },
+    async whenGetAuthEventOffers() {
+      store = createTestStore({ offerGateway }, testStateBuilder.getState());
+      await store.dispatch(getAuthEventOffers());
+    },
     thenUserLoyaltyCardsLoading({ name }: { name: string }) {
       const isUserLoyaltyCardsLoadings = selectIsUserCardsLoading(
         store.getState(),
         name
       );
       expect(isUserLoyaltyCardsLoadings).toBe(true);
+    },
+    thenAuthOffersLoading({ authID }: { authID: string }) {
+      const isAuthUserOffersLoadings = selectIsUserOffersLoading(
+        store.getState(),
+        { userID: authID }
+      );
+      expect(isAuthUserOffersLoadings).toBe(true);
     },
 
     thenLoyaltyCardBearingsLoading({ loyaltyID }: { loyaltyID: string }) {
@@ -116,6 +135,19 @@ export const createLoyaltyFixture = (
         ])
         .withBearings(bearings)
         .withNotLoadingBearingForLoyalty({ loyaltyID: loyalty.id })
+        .build();
+
+      expect(store.getState()).toEqual(expectState);
+    },
+    thenOffersShouldBe({ offers }: { offers: Offer[] }) {
+      const auth = selectAuthUser(testStateBuilder.getState());
+      const expectState = stateBuilder(testStateBuilder.getState())
+        .withOffers(offers)
+        .withAuthUser({
+          ...auth,
+          offers: offers.map((o) => o.id),
+        })
+        .withNotLoadingOffersForAuthUser({ authID: auth.id })
         .build();
 
       expect(store.getState()).toEqual(expectState);

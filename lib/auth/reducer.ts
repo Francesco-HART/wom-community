@@ -2,23 +2,25 @@ import { createReducer, isAnyOf } from "@reduxjs/toolkit";
 import { RootState } from "../create-store";
 import { authenticateWithGoogle } from "./usecases/authenticate-with-google.usecase";
 import { authenticateWithGithub } from "./usecases/authenticate-with-github.usecase";
+import { AuthUser } from "./models/auth.model";
+import { getAuthEventOffers } from "../loyalty/usecases/get-auth-event-offers.usecase";
 
-export type Auth = {
-  phoneNumber: string;
-};
-export const reducer = createReducer<Auth>(
+export const reducer = createReducer<AuthUser>(
   {
+    id: "",
     phoneNumber: "",
+    offers: [],
   },
   (builder) => {
+    builder.addCase(getAuthEventOffers.fulfilled, (state, action) => {
+      state.offers = action.payload.offers.map((o) => o.id);
+    });
     builder.addMatcher(
       isAnyOf(
         authenticateWithGoogle.fulfilled,
         authenticateWithGithub.fulfilled
       ),
-      (state, action) => {
-        state.phoneNumber = action.payload.phoneNumber;
-      }
+      (_, action) => action.payload
     );
   }
 );

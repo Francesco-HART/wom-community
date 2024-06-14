@@ -7,9 +7,17 @@ export const createAuthFixture = (
 ) => {
   //   const authGateway = new FakeAuthGateway();
   return {
-    givenAuthUserShouldBe({ phoneNumber }: { phoneNumber: string }) {
+    givenAuthUserShouldBe({
+      phoneNumber,
+      id,
+      offers = [],
+    }: {
+      phoneNumber: string;
+      id: string;
+      offers: string[];
+    }) {
       testStateBuilderProvider.setState((stateBuilder) =>
-        stateBuilder.withAuthUser({ phoneNumber })
+        stateBuilder.withAuthUser({ phoneNumber, id, offers })
       );
     },
   };

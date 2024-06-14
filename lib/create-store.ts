@@ -12,11 +12,14 @@ import { AuthGateway } from "./auth/models/auth.gateway";
 import { FakeAuthGateway } from "./auth/infra/fake-auth.gateway";
 import { BearingGateway } from "./loyalty/models/bearing.gateway";
 import { FakeBearingGateway } from "./loyalty/infra/fake-bearing.gateway";
+import { OfferGateway } from "./loyalty/models/offer.gateway";
+import { FakeOfferGateway } from "./loyalty/infra/fake-offer.gateway";
 
 export type Dependencies = {
   loyaltyGateway: LoyaltyGateway;
   authGateway: AuthGateway;
   bearingGateway: BearingGateway;
+  offerGateway: OfferGateway;
 };
 
 export const rootReducer = combineReducers({
@@ -47,6 +50,7 @@ export const createTestStore = (
     loyaltyGateway = new FakeLoyaltyGateway(),
     authGateway = new FakeAuthGateway(),
     bearingGateway = new FakeBearingGateway(),
+    offerGateway = new FakeOfferGateway(),
   }: Partial<Dependencies> = {},
   preloadedState?: Partial<RootState>
 ) => {
@@ -55,6 +59,7 @@ export const createTestStore = (
       loyaltyGateway,
       authGateway,
       bearingGateway,
+      offerGateway,
     },
     preloadedState
   );
