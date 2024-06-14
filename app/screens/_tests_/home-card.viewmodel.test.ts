@@ -26,6 +26,8 @@ describe("Home cards screen view model", () => {
   it("Auth cards loading", () => {
     const initialState = stateBuilder()
       .withAuthUser({
+        id: "1",
+        offers: [],
         phoneNumber: "01010101",
       })
       .withLoadingAuthLoyaltyCards({
@@ -57,6 +59,8 @@ describe("Home cards screen view model", () => {
           ofCompany: "Birdy",
           createAt: "2023-05-16T12:06:00.000Z",
           companyLogo: "https://picsum.photos/200?random=pierre",
+          visits: [],
+          bearings: [],
         },
         {
           id: "3",
@@ -66,9 +70,13 @@ describe("Home cards screen view model", () => {
           ofCompany: "Birdy",
           createAt: "2023-05-16T12:06:00.000Z",
           companyLogo: "https://picsum.photos/200?random=pierre",
+          visits: [],
+          bearings: [],
         },
       ])
       .withAuthUser({
+        id: "1",
+        offers: [],
         phoneNumber: "01010101",
       })
       .withNotLoadingAuthLoyaltyCards({

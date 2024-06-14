@@ -1,5 +1,7 @@
 import { selectAuthUser } from "@/lib/auth/reducer";
 import { RootState } from "@/lib/create-store";
+import { Bearing } from "@/lib/loyalty/models/bearing.model";
+import { Offer } from "@/lib/loyalty/models/offer.model";
 import {
   selectLoyaltyBearings,
   selectLoyaltyBearingsLoading,
@@ -19,9 +21,57 @@ export enum CardDetailsViewModelType {
   OffersLoading = "OffersLoading",
 }
 
+export type CardDetailsViewModel =
+  | {
+      type: CardDetailsViewModelType.UserNoAuth;
+    }
+  | {
+      type: CardDetailsViewModelType.CardDoseNotExist;
+    }
+  | {
+      type: CardDetailsViewModelType.CardSuccess;
+      loyaltyCard: {
+        id: string;
+        companyName: string;
+        createAt: string;
+        companyLogo: string;
+        offers: Offer[];
+        bearings: Bearing[];
+      };
+    }
+  | {
+      type: CardDetailsViewModelType.BearingsLoading;
+      loyaltyCard: {
+        id: string;
+        companyName: string;
+        createAt: string;
+        companyLogo: string;
+        offers: Offer[];
+      };
+    }
+  | {
+      type: CardDetailsViewModelType.OffersAndBearingsLoading;
+      loyaltyCard: {
+        id: string;
+        companyName: string;
+        createAt: string;
+        companyLogo: string;
+      };
+    }
+  | {
+      type: CardDetailsViewModelType.OffersLoading;
+      loyaltyCard: {
+        id: string;
+        companyName: string;
+        createAt: string;
+        companyLogo: string;
+        bearings: Bearing[];
+      };
+    };
+
 export const useCardDetailsViewModel =
   ({ loyaltyCardID }: { loyaltyCardID: string }) =>
-  (state: RootState) => {
+  (state: RootState): CardDetailsViewModel => {
     const authUser = selectAuthUser(state);
     const card = selectUserLoyaltyCardByCardId(state, loyaltyCardID);
     const isBearingsLoading = selectLoyaltyBearingsLoading(
@@ -46,8 +96,6 @@ export const useCardDetailsViewModel =
           companyName: card.ofCompany,
           createAt: card.createAt,
           companyLogo: card.companyLogo,
-          offers: [],
-          bearings: [],
         },
       };
 
@@ -59,7 +107,6 @@ export const useCardDetailsViewModel =
           companyName: card.ofCompany,
           createAt: card.createAt,
           companyLogo: card.companyLogo,
-          offers: [],
           bearings,
         },
       };
@@ -73,7 +120,6 @@ export const useCardDetailsViewModel =
           createAt: card.createAt,
           companyLogo: card.companyLogo,
           offers,
-          bearings: [],
         },
       };
 

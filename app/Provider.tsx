@@ -10,8 +10,6 @@ export const AppProvider = ({
   store: AppStore;
   router: AppRouter;
 }) => {
-  const colorScheme = useColorScheme();
-
   return (
     <Provider store={store}>
       <AppNavigator router={router} />

@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import { Text, View, Image } from "react-native";
-import { useSelector } from "react-redux";
+import React, { ReactNode, useEffect } from "react";
+import { Text, View, Image, Button } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import {
   HomeCardsViewModelType,
   HomeViewModel,
@@ -8,31 +8,47 @@ import {
 } from "./home-cards.viewmodel";
 import { exhaustiveGuard } from "@/app/exaustive-guard";
 import { SearchCardsBard } from "./components/SearchCardsBar";
-import en from "javascript-time-ago/locale/en";
 import { useSearchCardsBar } from "./use-search-cards-bar.hook";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "@/app/navigations/router";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import en from "javascript-time-ago/locale/en";
+import { AppDispatch } from "@/lib/create-store";
+import { getAuthLoyaltyCards } from "@/lib/loyalty/usecases/get-auth-loyalty-card.usecase";
 
 const getNow = () => new Date().toISOString();
 
-const updateUI = (homeViewModel: HomeViewModel): ReactNode => {
+const updateUI = (
+  homeViewModel: HomeViewModel,
+  action: (_: string) => void
+): ReactNode => {
   switch (homeViewModel.type) {
     case HomeCardsViewModelType.NoLoyaltyCard:
-      return <Text>No loyalty cards</Text>;
-    case HomeCardsViewModelType.Loading:
-      return <Text>Loading...</Text>;
-    case HomeCardsViewModelType.Success:
-      const { setByName, filterCardsByName, byName } = useSearchCardsBar();
       return (
         <View>
-          <SearchCardsBard onChange={setByName} />
-          {filterCardsByName(byName, homeViewModel.cards).map((card) => {
+          <Text>No loyalty cards</Text>
+        </View>
+      );
+    case HomeCardsViewModelType.Loading:
+      return (
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      );
+    case HomeCardsViewModelType.Success:
+      return (
+        <View>
+          {/* <SearchCardsBard onChange={setByName} /> */}
+          {homeViewModel.cards.map((card) => {
             return (
-              <View>
+              <View key={card.id}>
                 <Image
                   key={card.id + "logo"}
                   source={{ uri: card.companyLogo }}
                 />
                 <Text key={card.id + "date"}>{card.createAt}</Text>
                 <Text key={card.id + "r"}>{card.companyName}</Text>
+                <Button title="details" onPress={() => action(card.id)} />
               </View>
             );
           })}
@@ -44,6 +60,19 @@ const updateUI = (homeViewModel: HomeViewModel): ReactNode => {
 };
 
 export default function HomeScreen() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList, "Details">>();
+  const dispatch = useDispatch<AppDispatch>();
+  const focusOnTransitionEnd = () => {
+    return navigation.addListener("transitionEnd", () => {
+      dispatch(getAuthLoyaltyCards());
+    });
+  };
+
+  useEffect(() => {
+    return focusOnTransitionEnd();
+  }, [focusOnTransitionEnd]);
+
   const viewModel = useSelector(
     useHomeCardsViewModel({
       now: getNow(),
@@ -51,6 +80,10 @@ export default function HomeScreen() {
       localString: "en",
     })
   );
+  const action = (loyaltyID: string) =>
+    navigation.navigate("Details", {
+      loyaltyID,
+    });
 
-  return <View>{updateUI(viewModel)}</View>;
+  return <View>{updateUI(viewModel, action)}</View>;
 }

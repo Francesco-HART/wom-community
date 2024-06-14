@@ -26,6 +26,8 @@ export const Login = ({ navigation }: { navigation: any }) => {
       .finally(() => setGithubAuthenticating(false));
   };
 
+  const goToLogin = () => navigation.replace("Login");
+
   const focusOnTransitionEnd = () => {
     return navigation.addListener("transitionEnd", (e: any) => {
       if (isAuthUserAuthenticated) {
@@ -34,9 +36,6 @@ export const Login = ({ navigation }: { navigation: any }) => {
       }
     });
   };
-
-  const goToLogin = () => navigation.replace("Login");
-
   useEffect(() => {
     return focusOnTransitionEnd();
   }, [focusOnTransitionEnd]);

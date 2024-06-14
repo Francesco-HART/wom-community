@@ -18,7 +18,7 @@ export class FakeLoyaltyGateway implements LoyaltyGateway {
     });
   }
   async getAuthLoyalties(phoneNumber: string): Promise<GetLoyalty[]> {
-    await new Promise((resolve) => setTimeout(resolve, this.delay));
+    await new Promise((resolve) => setTimeout(() => resolve({}), this.delay));
     return Array.from(this.loyalties.values()).filter(
       (loyalty) => loyalty.phoneNumber === phoneNumber
     );

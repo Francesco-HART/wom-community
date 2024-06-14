@@ -7,6 +7,12 @@ export class FakeOfferGateway implements OfferGateway {
   offersByConsumerID = new Map<string, Offer[]>();
   o = new Map<string, Offer>();
   async getEventOffersByConsumerID(consumerID: string): Promise<Offer[]> {
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        resolve({});
+      }, this.delay)
+    );
+
     return new Promise((resolve) => {
       const offersGet = this.offersByConsumerID.get(consumerID);
 

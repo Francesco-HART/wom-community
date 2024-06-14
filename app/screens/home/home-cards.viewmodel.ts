@@ -52,6 +52,7 @@ export const useHomeCardsViewModel =
       state,
       authUser.phoneNumber
     );
+
     if (authLoyaltyCards.length > 0)
       return {
         type: HomeCardsViewModelType.Success,
