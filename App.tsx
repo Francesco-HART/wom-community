@@ -34,6 +34,33 @@ export default function App() {
       createAt: "2023-05-16T12:06:00.000Z",
       companyLogo: "https://picsum.photos/200?random",
     },
+    {
+      id: "2",
+      phoneNumber: "0101010101",
+      visits: [],
+      companyName: "Birdy",
+      companyId: "1",
+      createAt: "2023-05-16T12:06:00.000Z",
+      companyLogo: "https://picsum.photos/200?random",
+    },
+    {
+      id: "3",
+      phoneNumber: "0101010101",
+      visits: [],
+      companyName: "Birdy",
+      companyId: "1",
+      createAt: "2023-05-16T12:06:00.000Z",
+      companyLogo: "https://picsum.photos/200?random",
+    },
+    {
+      id: "4",
+      phoneNumber: "0101010101",
+      visits: [],
+      companyName: "Birdy",
+      companyId: "1",
+      createAt: "2023-05-16T12:06:00.000Z",
+      companyLogo: "https://picsum.photos/200?random",
+    },
   ]);
 
   const offerGateway = new FakeOfferGateway(5000);

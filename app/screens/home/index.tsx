@@ -7,14 +7,13 @@ import {
   useHomeCardsViewModel,
 } from "./home-cards.viewmodel";
 import { exhaustiveGuard } from "@/app/exaustive-guard";
-import { SearchCardsBard } from "./components/SearchCardsBar";
-import { useSearchCardsBar } from "./use-search-cards-bar.hook";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "@/app/navigations/router";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import en from "javascript-time-ago/locale/en";
 import { AppDispatch } from "@/lib/create-store";
 import { getAuthLoyaltyCards } from "@/lib/loyalty/usecases/get-auth-loyalty-card.usecase";
+import { LoyaltyCardsScrollView } from "./components/LoyaltyCardsScrollView";
+import en from "javascript-time-ago/locale/en";
 
 const getNow = () => new Date().toISOString();
 
@@ -39,19 +38,7 @@ const updateUI = (
       return (
         <View>
           {/* <SearchCardsBard onChange={setByName} /> */}
-          {homeViewModel.cards.map((card) => {
-            return (
-              <View key={card.id}>
-                <Image
-                  key={card.id + "logo"}
-                  source={{ uri: card.companyLogo }}
-                />
-                <Text key={card.id + "date"}>{card.createAt}</Text>
-                <Text key={card.id + "r"}>{card.companyName}</Text>
-                <Button title="details" onPress={() => action(card.id)} />
-              </View>
-            );
-          })}
+          <LoyaltyCardsScrollView loyaltyCards={homeViewModel.cards} />
         </View>
       );
     default:

@@ -20,6 +20,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@reduxjs/toolkit": "^2.2.5",
     "@total-typescript/ts-reset": "^0.5.1",
+    "clsx": "^2.1.1",
     "expo": "~51.0.9",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.6",

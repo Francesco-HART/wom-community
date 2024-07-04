@@ -159,7 +159,6 @@ describe("Card details view model state", () => {
         companyName: "Birdy",
         createAt: "2023-05-16T12:06:00.000Z",
         companyLogo: "https://picsum.photos/200?random=paul",
-        bearings: [],
         offers: [
           {
             name: "fake",
@@ -222,7 +221,6 @@ describe("Card details view model state", () => {
         companyName: "Birdy",
         createAt: "2023-05-16T12:06:00.000Z",
         companyLogo: "https://picsum.photos/200?random=pierre",
-        offers: [],
         bearings: [
           {
             id: "1",
@@ -279,8 +277,6 @@ describe("Card details view model state", () => {
         companyName: "Birdy",
         createAt: "2023-05-16T12:06:00.000Z",
         companyLogo: "https://picsum.photos/200?random=pierre",
-        bearings: [],
-        offers: [],
       },
     });
   });
