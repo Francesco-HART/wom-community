@@ -10,6 +10,7 @@ import type { SharedValue } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import React from "react";
+import { useHomeActions } from "../home.context";
 
 type CardProps = {
   index: number;
@@ -176,6 +177,8 @@ export const LoyaltyCard: React.FC<CardProps> = ({
     };
   }, []);
 
+  const homeActions = useHomeActions();
+
   return (
     <Animated.View
       style={[
@@ -205,7 +208,10 @@ export const LoyaltyCard: React.FC<CardProps> = ({
             <Text className="text-neutral-500 dark:text-neutral-400">
               {"itemDetails.quantity.name"}
             </Text>
-            <Button variant="link" onPress={() => console.log("ici")}>
+            <Button
+              variant="link"
+              onPress={() => homeActions.pressLoyaltyCard(card.id)}
+            >
               <Button.Icon>
                 <Feather name="edit" />
               </Button.Icon>

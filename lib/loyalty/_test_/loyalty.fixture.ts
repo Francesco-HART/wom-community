@@ -32,6 +32,7 @@ export const createLoyaltyFixture = (
     defaultLoyaltyOne: loyaltyBuilder({
       id: "1",
       ofUser: {
+        id: "1",
         phoneNumber: "0101010101",
       },
       ofCompany: "Birdy",

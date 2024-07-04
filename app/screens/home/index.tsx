@@ -14,6 +14,7 @@ import { AppDispatch } from "@/lib/create-store";
 import { getAuthLoyaltyCards } from "@/lib/loyalty/usecases/get-auth-loyalty-card.usecase";
 import { LoyaltyCardsScrollView } from "./components/LoyaltyCardsScrollView";
 import en from "javascript-time-ago/locale/en";
+import { HomeProviderContext } from "./home.context";
 
 const getNow = () => new Date().toISOString();
 
@@ -37,7 +38,6 @@ const updateUI = (
     case HomeCardsViewModelType.Success:
       return (
         <View>
-          {/* <SearchCardsBard onChange={setByName} /> */}
           <LoyaltyCardsScrollView loyaltyCards={homeViewModel.cards} />
         </View>
       );
@@ -67,10 +67,14 @@ export default function HomeScreen() {
       localString: "en",
     })
   );
-  const action = (loyaltyID: string) =>
+  const pressLoyaltyCard = (loyaltyID: string) =>
     navigation.navigate("Details", {
       loyaltyID,
     });
 
-  return <View>{updateUI(viewModel, action)}</View>;
+  return (
+    <HomeProviderContext pressLoyaltyCard={pressLoyaltyCard}>
+      <View>{updateUI(viewModel, pressLoyaltyCard)}</View>
+    </HomeProviderContext>
+  );
 }

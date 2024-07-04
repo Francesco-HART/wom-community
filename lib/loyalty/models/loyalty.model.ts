@@ -4,6 +4,7 @@ export type Loyalty = {
   id: string;
   ofUser: {
     phoneNumber: string;
+    id: string;
   };
   ofCompany: string;
   createAt: string;

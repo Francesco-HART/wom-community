@@ -8,16 +8,23 @@ export const authLoyaltyCardsPendings = createAction<{
 
 export const getAuthLoyaltyCards = createAsyncAppThunk(
   "loyalty/getAuthLoyaltyCards",
-  async (_, { extra: { loyaltyGateway }, dispatch, getState }) => {
+  async (
+    _,
+    { rejectWithValue, extra: { loyaltyGateway }, dispatch, getState }
+  ) => {
     const authUser = selectAuthUser(getState());
     dispatch(
       authLoyaltyCardsPendings({
         authId: authUser.phoneNumber,
       })
     );
-    const loyaltiesCards = await loyaltyGateway.getAuthLoyalties(
-      authUser.phoneNumber
-    );
-    return { loyaltyCards: [...loyaltiesCards], authUser: authUser };
+    try {
+      const loyaltiesCards = await loyaltyGateway.getAuthLoyalties(
+        authUser.phoneNumber
+      );
+      return { loyaltyCards: [...loyaltiesCards], authUser: authUser };
+    } catch (error) {
+      return rejectWithValue(authUser.phoneNumber);
+    }
   }
 );

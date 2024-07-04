@@ -20,13 +20,15 @@ export const loyaltySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAuthLoyaltyCards.fulfilled, (state, action) => {
+      const authUser = action.payload.authUser;
       loyaltyAdapter.addMany(
         state,
         action.payload.loyaltyCards.map((loyalty) =>
           loyaltyBuilder({
             id: loyalty.id,
             ofUser: {
-              phoneNumber: loyalty.phoneNumber,
+              phoneNumber: authUser.phoneNumber,
+              id: authUser.id,
             },
             ofCompany: loyalty.companyName,
             createAt: loyalty.createAt,
@@ -40,6 +42,10 @@ export const loyaltySlice = createSlice({
     });
     builder.addCase(authLoyaltyCardsPendings, (state, action) => {
       state.loadingCardsByUser[action.payload.authId] = true;
+    });
+    builder.addCase(getAuthLoyaltyCards.rejected, (state, action) => {
+      if (action.meta.rejectedWithValue)
+        state.loadingCardsByUser[action.payload as string] = false;
     });
     builder.addCase(getLoyaltyBearings.fulfilled, (state, action) => {
       const loyaltyID = action.meta.arg.loyaltyID;

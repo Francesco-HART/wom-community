@@ -10,6 +10,7 @@ import { stateBuilder } from "./lib/state-builder";
 import { FakeLoyaltyGateway } from "./lib/loyalty/infra/fake-loyalty.gateway";
 import { loyaltyBuilder } from "./lib/loyalty/_test_/loyalty.builder";
 import { FakeOfferGateway } from "./lib/loyalty/infra/fake-offer.gateway";
+import { WomLoyaltyGateway } from "./lib/loyalty/infra/wom-loyalty.gateway";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -78,7 +79,7 @@ export default function App() {
   const router = createNavigator();
   const store = createTestStore(
     {
-      loyaltyGateway: loyaltyGateway,
+      loyaltyGateway: new WomLoyaltyGateway(),
       offerGateway: offerGateway,
     },
     state

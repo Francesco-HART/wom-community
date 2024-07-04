@@ -50,6 +50,7 @@ describe("Get loyalty usecase", () => {
         loyaltyBuilder({
           id: "1",
           ofUser: {
+            id: "1",
             phoneNumber: "0101010101",
           },
           ofCompany: "Birdy",
